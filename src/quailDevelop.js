@@ -2,21 +2,13 @@ var fs = require('fs');
 var path = require('path');
 var http = require('http');
 var appOpener = require('opener');
-var assessmentSpecsPath = path.join(
-  __dirname,
-  '..',
-  '..',
-  'test',
-  'assessmentSpecs',
-  'specs'
-);
+let config = require('./config');
+let cwd = process.cwd();
+let state = {};
 
-/**
- *
- */
 function serveAssessmentTestPage (response, assessmentName) {
   // Load up a page with the assessment test page.
-  fs.readFile(path.join(assessmentSpecsPath, assessmentName, assessmentName + '.html'), 'utf-8', function (err, source) {
+  fs.readFile(path.join(state.assessmentSpecsPath, assessmentName, assessmentName + '.html'), 'utf-8', function (err, source) {
     if (err) {
       console.error('\n' + err + '\n');
       process.exit(1);
@@ -25,13 +17,13 @@ function serveAssessmentTestPage (response, assessmentName) {
     var bodyTag = '</body>';
     source = source.slice(0, source.indexOf(bodyTag));
     // Javascript resources.
-    source += '<script src="node_modules/jquery/dist/jquery.min.js" type="application/javascript"></script>';
+    source += '<script src="' + state.jquery + '" type="application/javascript"></script>';
     source += [
       '<script>',
       'window.assessmentName = \'' + assessmentName + '\';',
       '</script>'
     ].join('\n');
-    source += '<script src="dist/runInBrowser.js" type="application/javascript"></script>';
+    source += '<script src="' + state.quail + '" type="application/javascript"></script>';
 
     source += bodyTag + '</html>';
     // Respond to the HTTP request.
@@ -44,9 +36,7 @@ function serveAssessmentTestPage (response, assessmentName) {
 
 function serveScriptResource (response, resourcePath) {
   fs.readFile(path.join(
-    __dirname,
-    '..',
-    '..',
+    cwd,
     resourcePath
   ), 'utf-8', function (err, source) {
     if (err) {
@@ -115,12 +105,18 @@ function processAssessments (assessmentName, cmd, err, directories) {
       }
       // image
       else if (accepts.indexOf('image') > -1) {
-        assetPath = path.join(assessmentSpecsPath, assessmentName, url);
+        assetPath = path.join(state.assessmentSpecsPath, assessmentName, url);
         serveAssetResource(response, assetPath);
       }
       // application/javascript
       else if (url.indexOf('.js') > -1 || url.indexOf('.map') > -1) {
         serveScriptResource(response, url);
+      }
+      else if (url.indexOf('.ico') > -1) {
+        response.writeHead(415, {
+          'Content-Type': 'text/html'
+        });
+        response.end('<!DOCTYPE html>\n<html><body><p>We ain\'t got none.</p></body></html>');
       }
       // 406
       else {
@@ -145,5 +141,10 @@ function processAssessments (assessmentName, cmd, err, directories) {
  */
 module.exports = function quailDevelop (assessmentName, cmd) {
   // Get a list of assessments.
-  fs.readdir(assessmentSpecsPath, processAssessments.bind(this, assessmentName, cmd));
+  config.getLocalConfig(function (data) {
+    state.jquery = data.jquery;
+    state.quail = data.quail;
+    state.assessmentSpecsPath = data.assessmentSpecsPath;
+    fs.readdir(state.assessmentSpecsPath, processAssessments.bind(this, assessmentName, cmd));
+  });
 };
