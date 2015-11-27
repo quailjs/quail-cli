@@ -10,8 +10,10 @@
   },
   "bugs": "http://github.com/jessebeach/quail-cli/issues",
   "dependencies": {
+    "commander": "^2.9.0",
     "core-js": "^0.9.13",
-    "jquery": "^2.1.4"
+    "jquery": "^2.1.4",
+    "opener": "^1.4.1"
   },
   "scripts": {
     "compile": "babel -e -d lib/ src/",
