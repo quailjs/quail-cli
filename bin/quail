@@ -71,8 +71,9 @@ program
 // `quail-build`
 program
   .command('build')
-  .description('Build Quail to run in a brower.')
+  .description('Build Quail to run in a browser.')
   .alias('b')
+  .option('-c, --config [configFile]', 'A configuration file.', '.quailrc')
   .option('-d, --dev', 'The build Quail to run in a browser for inspection with a console.')
   .action(function (cmd) {
     quailBuild.call(this, cmd);
