@@ -1,18 +1,19 @@
 #!/usr/bin/env node
-var fs = require('fs');
-var path = require('path');
-var program = require('commander');
-var quailEvaluate = require('../lib/quailEvaluate');
-var quailDevelop = require('../lib/quailDevelop');
-var quailGenerate = require('../lib/quailGenerate');
+const fs = require('fs');
+const path = require('path');
+const program = require('commander');
+const quailBuild = require('../lib/quailBuild');
+const quailDevelop = require('../lib/quailDevelop');
+const quailEvaluate = require('../lib/quailEvaluate');
+const quailGenerate = require('../lib/quailGenerate');
 
-// `quail` command.
+// `quail`
 program
   .version('0.0.1')
   .description('Automated accessibility assessment runner.')
   .option('-R, --runner <runnerScript>', 'A <runnerScript> that will run the evaluation. Currently there exists \'default\' and \'wcag2\'.', 'default');
 
-// `evaluate` sub-command.
+// `quail-evaluate`
 program
   .command('evaluate <url>')
   .description('A <url> to test')
@@ -32,7 +33,7 @@ program
     console.log();
   });
 
-// `develop` sub-command.
+// `quail-develop`
 program
   .command('develop <assessmentName>')
   .description('The name of an assessment to load into a browser for development')
@@ -49,7 +50,7 @@ program
     console.log();
   });
 
-// `generate` sub-command.
+// `quail-generate`
 program
   .command('generate <assessmentName>')
   .description('Generate assessment test files for the named assessment.')
@@ -62,7 +63,19 @@ program
     console.log();
     console.log('    $ quail generate aMustHaveTitle');
     console.log();
-  })
+  });
+
+// `quail-build`
+program
+  .command('build')
+  .description('Build Quail to run in a brower.')
+  .alias('b')
+  .option('-d, --dev', 'The build Quail to run in a browser for inspection with a console.')
+  .action(function (cmd) {
+    quailBuild.call(this, cmd);
+  });
+
+// `quail-watch`
 
 program.parse(process.argv);
 
