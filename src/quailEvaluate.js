@@ -1,3 +1,7 @@
+#!/usr/bin/env node --harmony
+
+'use strict';
+
 var path = require('path');
 var spawn = require('child_process').spawn;
 
