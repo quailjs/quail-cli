@@ -11,12 +11,10 @@
   "bugs": "http://github.com/jessebeach/quail-cli/issues",
   "dependencies": {
     "commander": "^2.9.0",
-    "core-js": "^0.9.13",
-    "jquery": "^2.1.4",
     "opener": "^1.4.1"
   },
   "scripts": {
-    "compile": "babel -e -d lib/ src/",
+    "compile": "babel --presets stage-2 -d lib/ src/",
     "prepublish": "npm run compile",
     "test": "jscs -c .jscsrc src bin && eslint -c .eslintrc src bin",
     "watch": "npm-watch"
@@ -25,9 +23,13 @@
     "quail": "bin/quail"
   },
   "preferGlobal": true,
+  "peerDependencies": {
+    "@quailjs/quail-core": "0.0.8"
+  },
   "devDependencies": {
-    "babel": "^5.4.7",
-    "babel-eslint": "^4.1.6",
+    "babel-eslint": "^5.0.0-beta4",
+    "babel-polyfill": "^6.2.0",
+    "babel-preset-stage-2": "^6.1.18",
     "eslint": "^1.10.1",
     "jscs": "jscs-dev/node-jscs#c5adeba",
     "npm-watch": "0.0.1"
