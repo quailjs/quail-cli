@@ -1,3 +1,7 @@
+#!/usr/bin/env node --harmony
+
+'use strict';
+
 var fs = require('fs');
 var path = require('path');
 var http = require('http');
