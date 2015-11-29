@@ -4,3 +4,7 @@ node_js:
 
 # Use Travis' new container-based running system.
 sudo: false
+
+install:
+- npm install -g babel-cli
+- npm install
