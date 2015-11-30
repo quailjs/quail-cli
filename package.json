@@ -4,6 +4,11 @@
   "version": "0.0.10",
   "author": "Jesse Beach <jesse.r.beach@gmail.com>",
   "license": "MIT",
+  "author": {
+    "name" : "Jesse Beach",
+    "email" : "splendidnoise@gmail.com",
+    "url" : "https://jessebeach.github.io/"
+  },
   "repository": {
     "type": "git",
     "url": "git://github.com/jessebeach/quail-cli.git"
