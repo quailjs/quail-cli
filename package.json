@@ -24,7 +24,7 @@
   },
   "preferGlobal": true,
   "peerDependencies": {
-    "@quailjs/quail-core": "0.0.8"
+    "@quailjs/quail-core": "0.0.15"
   },
   "devDependencies": {
     "babel-eslint": "^5.0.0-beta4",
