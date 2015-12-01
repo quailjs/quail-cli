@@ -1,14 +1,13 @@
 {
   "name": "@quailjs/quail-cli",
   "description": "The Quail command line interface",
-  "version": "0.0.10",
-  "author": "Jesse Beach <jesse.r.beach@gmail.com>",
-  "license": "MIT",
+  "version": "0.0.11",
   "author": {
-    "name" : "Jesse Beach",
-    "email" : "splendidnoise@gmail.com",
-    "url" : "https://jessebeach.github.io/"
+    "name": "Jesse Beach",
+    "email": "splendidnoise@gmail.com",
+    "url": "https://jessebeach.github.io/"
   },
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git://github.com/jessebeach/quail-cli.git"
