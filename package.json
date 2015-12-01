@@ -28,9 +28,6 @@
     "quail": "bin/quail"
   },
   "preferGlobal": true,
-  "peerDependencies": {
-    "@quailjs/quail-core": "0.0.15"
-  },
   "devDependencies": {
     "babel-eslint": "^5.0.0-beta4",
     "babel-polyfill": "^6.2.0",
