@@ -1,22 +1,21 @@
 #!/usr/bin/env node --harmony
-
 'use strict';
 
-var path = require('path');
-var spawn = require('child_process').spawn;
+const path = require('path');
+const spawn = require('child_process').spawn;
 
 /**
  *
  */
 module.exports = function quailEvaluate (url, cmd) {
   // Change to the dist dir.
-  var cwd = path.join(__dirname, '..');
+  let cwd = process.cwd();
 
   var runnerScript;
-  var phantomjsExec = path.join(__dirname, '..', 'node_modules/.bin/phantomjs');
+  var phantomjsExec = path.join(cwd, 'node_modules/phantomjs/bin/phantomjs');
   var runners = {
-    'default': path.join(__dirname, '..', 'lib/evaluators/phantom_evaluator.js'),
-    wcag2: path.join(__dirname, '..', 'lib/evaluators/wcag2_evaluator.js')
+    'default': path.join(cwd, 'src/evaluators/phantom_evaluator.js'),
+    wcag2: path.join(cwd, 'src/evaluators/wcag2_evaluator.js')
   };
 
   if (cmd.runner in runners) {
@@ -26,9 +25,9 @@ module.exports = function quailEvaluate (url, cmd) {
     runnerScript = runners['default'];
   }
 
-  var args = [runnerScript, url, cwd];
+  var args = [phantomjsExec, runnerScript, url, cwd];
   // Determine the configuration file path.
-  var configFilePath = path.join(__dirname, '..', 'config/config.json');
+  var configFilePath = path.join(cwd, 'config/config.json');
   if (cmd.config) {
     configFilePath = cmd.config;
   }
@@ -38,7 +37,7 @@ module.exports = function quailEvaluate (url, cmd) {
   if (cmd.output) {
     args.push(cmd.output);
   }
-  var proc = spawn(phantomjsExec, args, {
+  var proc = spawn('node', args, {
     stdio: 'inherit'
   });
   proc.on('exit', function (code, signal) {
