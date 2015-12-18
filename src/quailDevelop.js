@@ -6,9 +6,9 @@ var fs = require('fs');
 var path = require('path');
 var http = require('http');
 var appOpener = require('opener');
-let config = require('./config');
-let cwd = process.cwd();
-let state = {};
+var config = require('./config');
+var cwd = process.cwd();
+var state = {};
 
 function serveAssessmentTestPage (response, assessmentName) {
   // Load up a page with the assessment test page.
@@ -21,7 +21,6 @@ function serveAssessmentTestPage (response, assessmentName) {
     var bodyTag = '</body>';
     source = source.slice(0, source.indexOf(bodyTag));
     // Javascript resources.
-    source += '<script src="' + state.jquery + '" type="application/javascript"></script>';
     source += [
       '<script>',
       'window.assessmentName = \'' + assessmentName + '\';',
@@ -90,7 +89,7 @@ function processAssessments (assessmentName, cmd, err, directories) {
     process.exit(1);
   }
 
-  // HTTP server for testing fixtures like jQuery and Quail.
+  // HTTP server for testing fixtures.
   http
     .createServer(function (request, response) {
       var accepts = request.headers.accept;
@@ -146,7 +145,6 @@ function processAssessments (assessmentName, cmd, err, directories) {
 module.exports = function quailDevelop (assessmentName, cmd) {
   // Get a list of assessments.
   config.getLocalConfig(function (data) {
-    state.jquery = data.jquery;
     state.quail = data.quail;
     state.assessmentSpecsPath = data.assessmentSpecsPath;
     fs.readdir(state.assessmentSpecsPath, processAssessments.bind(this, assessmentName, cmd));

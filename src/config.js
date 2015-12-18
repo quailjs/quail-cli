@@ -1,10 +1,10 @@
 const fs = require('fs');
 const path = require('path');
 
-let cwd = process.cwd();
+var cwd = process.cwd();
 
-let getLocalConfig = (callback) => {
-  let configFilePath = path.join(cwd, '.quailrc');
+var getLocalConfig = (callback) => {
+  var configFilePath = path.join(cwd, '.quailrc');
   fs.readFile(configFilePath, 'utf8', function (err, data) {
     if (err) {
       console.log(err);
