@@ -15,7 +15,8 @@
   "bugs": "http://github.com/jessebeach/quail-cli/issues",
   "dependencies": {
     "commander": "^2.9.0",
-    "opener": "^1.4.1"
+    "opener": "^1.4.1",
+    "phantomjs": "^1.9.18"
   },
   "scripts": {
     "compile": "babel --presets stage-2 -d lib/ src/",
