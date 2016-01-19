@@ -3,10 +3,13 @@
 var system = require('system');
 var webpage = require('webpage');
 var fs = require('fs');
-var address = system.args[1]; // URL to evaluate
-var configFilePath = system.args[3]; // Configuration JSON file.
-var outputDir = system.args[4]; // Directory to write output to.
-var dir = fs.workingDirectory // Get rid of this.
+var [
+  ,
+  address, // URL to evaluate
+  configFilePath, // Configuration JSON file.
+  outputDir // Directory to write output to.
+] = system.args;
+var dir = fs.workingDirectory
 
 // Run time configurations.
 var config;
@@ -32,26 +35,6 @@ function quitPhantom (reason) {
   phantom.exit();
 }
 
-/**
- * Determines the length of an object.
- *
- * @param object obj
- *   The object whose size will be determined.
- *
- * @return number
- *   The size of the object determined by the number of keys.
- */
-function size (obj) {
-  var s = 0;
-  var key;
-
-  for (key in obj) {
-    if (obj.hasOwnProperty(key)) {
-      s++;
-    }
-  }
-  return s;
-}
 /**
  * Escapes strings to pass to RegExp.
  *
