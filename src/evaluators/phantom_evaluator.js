@@ -3,23 +3,32 @@
 var system = require('system');
 var webpage = require('webpage');
 var fs = require('fs');
-var address = system.args[1];
-var dir = system.args[2];
+var address = system.args[1]; // URL to evaluate
 var configFilePath = system.args[3]; // Configuration JSON file.
 var outputDir = system.args[4]; // Directory to write output to.
+var dir = fs.workingDirectory // Get rid of this.
 
 // Run time configurations.
-var config = JSON.parse(fs.read(configFilePath));
+var config;
+try {
+  config = JSON.parse(fs.read(configFilePath));
+}
+catch (err) {
+  quitPhantom(err);
+}
 
-// Create the QtRuntimeObject with the desired configuration. This is the PhantomJS
-// controller object.
+// Create the QtRuntimeObject with the desired configuration. This is the
+// PhantomJS controller object.
 var page = webpage.create(config.phantomjs);
 
 /**
  * Logs the reason for exit; exits Phantom.
  */
 function quitPhantom (reason) {
-  console.log('Exit' + (reason && (': ' + reason) || ''));
+  console.log('phantom_evaluator' + (reason && (': ' + reason) || ''));
+  if (stream) {
+    stream.close();
+  }
   phantom.exit();
 }
 
@@ -92,12 +101,15 @@ page.onResourceRequested = function (requestData, request) {
   else {
     blocked = rBlockedTypes.some(function (reg) {
       // Get the Accept header value.
-      var accept;
-      (requestData.headers || []).forEach(function (header) {
+      var headers = requestData.headers || [];
+      var accept, header;
+      for (var i = 0, il = headers.length; i < il; i++) {
+        header = headers[i];
         if (header.name.toLowerCase() === 'accept') {
           accept = header.value;
+          break;
         }
-      });
+      }
       return reg.test(accept || '');
     });
     if (blocked) {
@@ -155,38 +167,6 @@ phantom.onError = function (msg, trace) {
     trace
   ], undefined, 2));
 };
-
-var distPath = dir + '/dist'; // ./dist
-
-// var guidelinedata = fs.read(distPath + '/guideline.json');
-var guidelines = {}; // JSON.parse(guidelinedata);
-
-var testsdata = fs.read(distPath + '/tests.json');
-// Save the testsdata in the array all tests.
-// Some tests might need to be filtered out.
-var allTests = JSON.parse(testsdata);
-var tests = {};
-
-// If a specific test is requested, just use that one.
-var testFromCLI = system.args[2];
-
-if (testFromCLI && allTests[testFromCLI]) {
-  var singleTest = allTests[testFromCLI];
-  tests = {};
-  tests[testFromCLI] = singleTest;
-}
-else if (guidelines.length) {
-  // Only add the tests which are defined in the guidelines.
-  for (var i = 0 ; i < guidelines.length; i++) {
-    var key = guidelines[i];
-    if (allTests[key]) {
-      tests[key] = allTests[key];
-    }
-  }
-}
-else {
-  tests = allTests;
-}
 
 // The number of items that will attempt to write data from the evaluation.
 // When the evaulation starts, it will register how many items will
@@ -286,15 +266,14 @@ page.onLoadFinished = function (status) {
   var callPhantom = window && window.callPhantom || function () {};
   if (status === 'success') {
     console.log('Page opened successfully: ' + address);
-    // page.injectJs(distPath + '/quail.jquery.js');
-    page.injectJs(distPath + '/bundle.js');
+    page.injectJs(dir + '/dist/bundle.js');
 
     // Run the evaluation.
     //
     // The evaluation is executed in its own function scope. Closures that
     // incorporate outside scopes are not possible.
     try {
-      page.evaluate(function (tests) {
+      page.evaluate(function () {
         // Tell the client that we're starting the test run.
         console.log('Beginning evaluation.');
 
@@ -308,7 +287,6 @@ page.onLoadFinished = function (status) {
           }
         };
         globalQuail.run({
-          assessments: tests,
           // Called when an individual Case in a test is resolved.
           caseResolve: function (eventName, test, _case) {
             var name = test.get('name');
@@ -357,14 +335,6 @@ page.onLoadFinished = function (status) {
             var output = {
               successCriteria: {}
             };
-            // Get some stringifyable data from the results.
-            var looper = function (index, _case) {
-              output.successCriteria[name][result].push({
-                selector: _case.get('selector'),
-                html: _case.get('html')
-              });
-            };
-
             // Push the results of the test out to the Phantom listener.
             // If the SC was untested, report that as its status.
             if (status === 'untested' || status === 'noResults' || status === 'noTestCoverage') {
@@ -374,11 +344,19 @@ page.onLoadFinished = function (status) {
             else {
               output.successCriteria[name] = {};
               var results = successCriteria.get('results');
+              var cases, _case;
               for (var result in results) {
                 if (results.hasOwnProperty(result)) {
                   output.successCriteria[name][result] = [];
                   // Go through each case for this result and get its selector and HTML.
-                  results[result].forEach(looper);
+                  cases = results[result];
+                  for (var i = 0, il = cases.length; i < il; i++) {
+                    _case = cases[i];
+                    output.successCriteria[name][result].push({
+                      selector: _case.get('selector'),
+                      html: _case.get('html')
+                    });
+                  }
                 }
               }
               // List the totals for each type of result
@@ -390,7 +368,7 @@ page.onLoadFinished = function (status) {
             callPhantom('writeData', JSON.stringify(output));
           }
         });
-      }, tests, size);
+      });
     }
     catch (error) {
       callPhantom('quit', error);

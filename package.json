@@ -41,6 +41,6 @@
     "lib"
   ],
   "watch": {
-    "compile": "src/*.js"
+    "compile": "src/**/*.js"
   }
 }
