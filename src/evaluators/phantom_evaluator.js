@@ -130,15 +130,18 @@ page.onResourceTimeout = function (error) {
   ]));
 };
 
-page.onResourceError = function (error) {
+page.onResourceError = function (err) {
   // Ignore blocked resource errors.
-  if (error.errorCode !== 301) {
+  if (err.errorCode !== 301) {
     console.log(JSON.stringify([
       'Resource error',
-      'Error code: ' + error.errorCode,
-      error.errorString,
-      error.url
+      'Error code: ' + err.errorCode,
+      err.errorString,
+      err.url
     ], undefined, 2));
+    if (err.errorCode === 3) {
+      quitPhantom(err.errorString);
+    }
   }
 };
 
