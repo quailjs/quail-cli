@@ -26,7 +26,7 @@ module.exports = function quailEvaluate (url, cmd) {
     runnerScript = runners['default'];
   }
 
-  var args = [runnerScript, url, cwd];
+  var args = [runnerScript, url];
   // Determine the configuration file path.
   var configFilePath = path.join(__dirname, '..', '.phantomrc');
   if (cmd.config) {

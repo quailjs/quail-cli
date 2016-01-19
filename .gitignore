@@ -38,3 +38,5 @@ Thumbs.db
 
 # Ignore ES5 output
 lib/
+
+analyses
