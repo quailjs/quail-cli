@@ -15,8 +15,8 @@ module.exports = function quailEvaluate (url, cmd) {
   var runnerScript;
   var phantomjsExec = path.join(__dirname, '..', 'node_modules/.bin/phantomjs');
   var runners = {
-    'default': path.join(__dirname, '..', 'lib/evaluators/phantom_evaluator.js'),
-    wcag2: path.join(__dirname, '..', 'lib/evaluators/wcag2_evaluator.js')
+    'default': path.join(__dirname, 'evaluators/phantom_evaluator.js'),
+    wcag2: path.join(__dirname, 'evaluators/wcag2_evaluator.js')
   };
 
   if (cmd.runner in runners) {
@@ -28,7 +28,7 @@ module.exports = function quailEvaluate (url, cmd) {
 
   var args = [runnerScript, url, cwd];
   // Determine the configuration file path.
-  var configFilePath = path.join(__dirname, '..', 'config/config.json');
+  var configFilePath = path.join(__dirname, '..', '.phantomrc');
   if (cmd.config) {
     configFilePath = cmd.config;
   }
