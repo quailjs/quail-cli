@@ -3,8 +3,7 @@
 var system = require('system');
 var webpage = require('webpage');
 var fs = require('fs');
-var [
-  ,
+var [,
   address, // URL to evaluate
   configFilePath, // Configuration JSON file.
   outputDir // Directory to write output to.
