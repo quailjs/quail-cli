@@ -1,7 +1,7 @@
 {
   "name": "@quailjs/quail-cli",
   "description": "The Quail command line interface",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "author": {
     "name": "Jesse Beach",
     "email": "splendidnoise@gmail.com",
