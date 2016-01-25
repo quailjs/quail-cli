@@ -29,8 +29,10 @@
     "node": true
   },
   "globals": {
+    "jQuery": true,
+    "window": true,
+    "globalQuail": true,
     "process": true,
-    "quail": true,
     "require": true,
     "phantom": true,
     "console": true,
